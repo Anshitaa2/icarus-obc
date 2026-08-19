@@ -18,7 +18,7 @@ Initially, I had some issues with understanding the output, so I inspected the s
 code seperately. I also repeatedly ran the simulation to check whether the unexpected behavior still occurred. 
 For some issues, I used AI to understand the code and identify possible fixes, following which I implemented the changes
 and ran and reran the code. My understanding of each change is as follows:
-# 4. ISSUE 1 (fixed)
+## 4. ISSUE 1 (fixed)
 The real simulated battery has some voltage. The ADC converts physical voltage to a digital number for the computer to read.
 The file src/drivers/adc_driver.c contains the ADC simulation. So essentially there are two different battery values- 
 battery_voltage_true and battery_voltage_reported. The difference between these values in this program was very high, which
