@@ -33,15 +33,14 @@ reading. This is why it's called stale data. The spacecraft makes decisions base
 Also, if two tasks have the same priority, the one that runs fewer times gets selected first. Sensor Buffer Refresh and
 Thermal Monitor are both medium priority. This is important as sensor buffer refresh updates the current value, while thermal
 monitor reads it. The order in which it is executed can affect whether the thermal monitor uses current value or an older
-one.
+one. With more time, I would have investigated why scheduler_bias_flipped is being set and the intended order. I would then check whether changing the order removes THERM_STALE.
 ## 6. ISSUE 3 (investigated, not fixed)
 memcpy copies bytes from one memory location to another. Suppose memcpy has to copy 30 bytes but buffer only has room
 for 16. The remaining 14 bytes continue past the buffer and may overwrite adjacent memory, including the canary. 
 That is a buffer overflow. Canary is a value placed nearby in memory so the program can detect whether something
 accidentally overwrote that memory. My investigation process, was at first identifying the warning that I got(Sensor copy
 canary modified at tick 16). Then I searched the code for sensor copy canary and temp_guarded_copy- this lead me to the
-sensor copy implementation. This is a potential buffer overflow problem, but time constraints disable me from further 
-investigating and finding a fix.
+sensor copy implementation. This is a potential buffer overflow problem. So my preferred path of action would be inspecting the exact destination buffer size and number of bytes passed to memcpy. I would then make sure copy length cannot exceed the destination capacity, rerun the simulation and verify that canary warning at tick 16 does not appear again.
 ## 7. Fault Injection
 My understanding of fault injection is that we are supposed to add a command that pushes the spacecraft into a dangerous
 state, predict when it will crash and record that predicted tick.
