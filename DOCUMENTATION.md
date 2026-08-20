@@ -41,10 +41,7 @@ for 16. The remaining 14 bytes continue past the buffer and may overwrite adjace
 Canary is a value placed nearby in memory so the program can detect whether something accidentally overwrote that memory. My 
 investigation process, was at first identifying the warning that I got (Sensor copy canary modified at tick 16). Then I 
 searched the code for sensor copy canary and temp_guarded_copy. Since the function used memcpy, I initially suspected a 
-buffer overflow. I then inspected the destination size and copy length. Both were 16 bytes, so I could not confirm if memcpy 
-itself was causing the canary corruption. I did not fully identify the root cause. If I had more time, I would investigate 
-what is modifying the canary despite the copy length being limited and run the simulation to verify the warning no longer 
-occurs.
+buffer overflow. I then inspected the destination size and copy length. The destination was 16 bytes, while the calculated copy length was 34 bytes at the problematic tick. I also used GDB to inspect the canary before and after the copy and found that it remained unchanged. I did not fully identify if memcpy itself was causing the canary corruption. If I had more time, I would investigate the other writes affecting the canary and trace where its value is actually being modified.
 ## 7. Fault Injection
 My understanding of fault injection is that we are supposed to add a command that pushes the spacecraft into a dangerous
 state, predict when it will crash and record that predicted tick.
